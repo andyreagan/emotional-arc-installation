@@ -1,0 +1,3 @@
+
+
+timeseries_200,all_fvecs,centers_200 = my_book.chopper_sliding(my_LabMT,num_points=200,min_size=min_size,stop_val=stop_val,return_centers=True)
