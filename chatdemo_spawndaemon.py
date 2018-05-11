@@ -38,6 +38,9 @@ from tornado.options import define, options
 
 define("port", default=8890, help="run on the given port", type=int)
 
+# this will set it up to fake the data, and not change it
+debug_vis = False
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
@@ -79,13 +82,16 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
         if len(ChatSocketHandler.waiters) == 1:
             logging.info("first connection. spawn process?")
             
-        book = {"book_id": "2",
-                "title": "Harry Potter and the Sorcerer's Stone",
-                "author": "J.K. Rowling",
-                "ignorewords": ""}
-        
-        ChatSocketHandler.update_cache(book)
-        ChatSocketHandler.send_updates(book)
+
+
+        if debug_vis:
+            book = {"book_id": "2",
+                    "title": "Harry Potter and the Sorcerer's Stone",
+                    "author": "J.K. Rowling",
+                    "ignorewords": ""}
+                    
+            ChatSocketHandler.update_cache(book)
+            ChatSocketHandler.send_updates(book)
 
     def on_close(self):
         ChatSocketHandler.waiters.remove(self)
@@ -124,8 +130,6 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler):
 def dummy():
     # logging.info("every 5")
     logging.info("checking for a new book")
-
-    
     
     chat = {
         "id": str(uuid.uuid4()),
